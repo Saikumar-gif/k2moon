@@ -1,0 +1,204 @@
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>K2 Planet Real Estate Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3212/3212608.png" type="image/png">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: radial-gradient(circle at top, #0f2027, #203a43, #2c5364);
+      color: white;
+      margin: 0;
+    }
+
+    header, footer {
+      text-align: center;
+      padding: 20px;
+      background: rgba(0,0,0,0.3);
+    }
+
+    .hero {
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    .cta-button {
+      display: inline-block;
+      padding: 10px 25px;
+      background: #ff4d4d;
+      color: white;
+      text-decoration: none;
+      border: none;
+      border-radius: 5px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    .land-cards {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .card {
+      background: #1a1a2e;
+      margin: 10px;
+      padding: 20px;
+      border-radius: 8px;
+      width: 280px;
+      box-shadow: 0 0 10px rgba(255,255,255,0.1);
+      text-align: center;
+    }
+
+    .card h3 {
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      margin: 8px 0;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: #1c1c3a;
+      padding: 30px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+      max-width: 400px;
+      width: 90%;
+    }
+
+    .modal-content h2 {
+      margin-bottom: 15px;
+      color: #ff4d4d;
+    }
+
+    .close-btn {
+      margin-top: 20px;
+      background: transparent;
+      color: #fff;
+      border: 1px solid #ff4d4d;
+      padding: 8px 16px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 600px) {
+      .card {
+        width: 90%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🌍 K2 Planet Real Estate</h1>
+    <p>Own a slice of the galaxy.</p>
+  </header>
+
+  <section class="hero">
+    <h2>Secure Your Spot in the Stars</h2>
+    <p>Buy your plot on K2 Planet before it's colonized.</p>
+  </section>
+
+  <section class="land-cards" id="land">
+    <div class="card">
+      <h3>Crater View Plot</h3>
+      <p>500 sq.m. | Near the Vortex Ridge</p>
+      <p><strong>Price:</strong> ₹5,000</p>
+      <button class="cta-button" onclick="openModal('Crater View Plot', 500000)">Buy Now</button>
+    </div>
+    <div class="card">
+      <h3>Frozen Lake Estate</h3>
+      <p>1,000 sq.m. | Overlooks Ice Basin 7</p>
+      <p><strong>Price:</strong> ₹8,500</p>
+      <button class="cta-button" onclick="openModal('Frozen Lake Estate', 850000)">Buy Now</button>
+    </div>
+    <div class="card">
+      <h3>Solar West Ridge</h3>
+      <p>750 sq.m. | Panoramic Solar Views</p>
+      <p><strong>Price:</strong> ₹7,000</p>
+      <button class="cta-button" onclick="openModal('Solar West Ridge', 700000)">Buy Now</button>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 K2 Planet Realty. All rights reserved.</p>
+  </footer>
+
+  <!-- Modal -->
+  <div class="modal" id="paymentModal">
+    <div class="modal-content">
+      <h2 id="plotTitle">Confirm Plot</h2>
+      <p id="plotPrice">Price: ₹0</p>
+      <button class="cta-button" onclick="payNow()">Pay with Razorpay</button>
+      <br>
+      <button class="close-btn" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+
+  <script>
+    let selectedPlot = "";
+    let selectedPrice = 0;
+
+    function openModal(plot, price) {
+      selectedPlot = plot;
+      selectedPrice = price;
+      document.getElementById('plotTitle').textContent = plot;
+      document.getElementById('plotPrice').textContent = `Price: ₹${price / 100}`;
+      document.getElementById('paymentModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('paymentModal').style.display = 'none';
+    }
+
+    function payNow() {
+      var options = {
+        "key": "YOUR_RAZORPAY_TEST_KEY", // Replace with your Razorpay test key
+        "amount": selectedPrice,
+        "currency": "INR",
+        "name": "K2 Planet Realty",
+        "description": `Purchase: ${selectedPlot}`,
+        "image": "https://cdn-icons-png.flaticon.com/512/3212/3212608.png",
+        "handler": function (response){
+          closeModal();
+          alert("✅ Payment Successful!\nPayment ID: " + response.razorpay_payment_id);
+        },
+        "prefill": {
+          "name": "K2 Explorer",
+          "email": "explorer@k2mail.com",
+          "contact": "9876543210"
+        },
+        "theme": {
+          "color": "#ff4d4d"
+        }
+      };
+      var rzp = new Razorpay(options);
+      rzp.open();
+    }
+  </script>
+
+</body>
+</html>
